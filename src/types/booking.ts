@@ -6,10 +6,10 @@ export type PaymentMethod = 'Bank Transfer (Al Rajhi)' | 'Bank Transfer (BCA/Man
 
 export interface RoomDetail {
   id: string;
-  roomType: string; // e.g. 'Quad', 'Triple', 'Double', 'Suite', 'Single'
+  roomType: string;
   numberOfRooms: number;
-  costPerNight: number; // In input currency
-  sellPerNight: number; // In input currency
+  costPerNight: number;
+  sellPerNight: number;
   mealPlan: 'Room Only' | 'Breakfast' | 'Half Board' | 'Full Board';
 }
 
@@ -21,18 +21,16 @@ export interface AdditionalCostItem {
 }
 
 export type BookingType = 'Private' | 'Group';
-
 export type VisaAction = 'Agreement Sent' | 'Approved' | 'Rejected' | 'BRN';
-
 export type PaymentDirection = 'customer' | 'vendor';
 
 export interface PaymentRecord {
   id: string;
-  date: string; // ISO date string
+  date: string;
   amountSAR: number;
   amountIDR: number;
-  exchangeRate?: number; // Rate applied at transaction time
-  direction?: PaymentDirection; // customer termin (in) or vendor payment (out)
+  exchangeRate?: number;
+  direction?: PaymentDirection;
   method: PaymentMethod;
   reference?: string;
   note?: string;
@@ -41,7 +39,7 @@ export interface PaymentRecord {
 export interface Customer {
   id: string;
   bookingType: BookingType;
-  name: string; // Guest name (private) or lead contact (group)
+  name: string;
   travelCompany?: string;
   phone: string;
   email?: string;
@@ -74,7 +72,7 @@ export interface ProductRecord {
 }
 
 export interface HotelTransfer {
-  type: 'vendor' | 'client-upgrade'; // vendor-initiated move or client-requested upgrade
+  type: 'vendor' | 'client-upgrade';
   fromHotel: string;
   toHotel: string;
   date: string;
@@ -94,7 +92,6 @@ export interface ImportSideSnapshot {
   totalIDRActual: number | null;
 }
 
-/** Lossless source values retained alongside normalized application fields. */
 export interface ImportSourceSnapshot {
   bookingNo: string;
   sourceNights: number | null;
@@ -109,69 +106,49 @@ export interface ImportSourceSnapshot {
 
 export interface Booking {
   id: string;
-  bookingRef: string; // e.g. TAM-2025-101
-  createdAt: string; // ISO date string
+  bookingRef: string;
+  createdAt: string;
   updatedAt: string;
   status: PaymentStatus;
   staffName: string;
-  source?: 'manual' | 'import'; // Origin of the record
+  source?: 'manual' | 'import';
   importSource?: ImportSourceSnapshot;
-  visaAction?: VisaAction; // Visa approval workflow response
-  paymentHistory?: PaymentRecord[]; // Customer termin / installment payments (in)
-  vendorPayments?: PaymentRecord[]; // Payments to hotel/vendor (out)
-
-  // Customer Details
-  bookingType?: BookingType; // Private individual or Group via travel company
-  travelCompany?: string; // Travel company name for group bookings
-  vendorName?: string; // Room supplier / vendor company name
-  vendorPic?: string; // PIC Sales contact person from the vendor
+  visaAction?: VisaAction;
+  paymentHistory?: PaymentRecord[];
+  vendorPayments?: PaymentRecord[];
+  bookingType?: BookingType;
+  travelCompany?: string;
+  vendorName?: string;
+  vendorPic?: string;
   customerName: string;
-  customerPhone: string; // WhatsApp friendly
+  customerPhone: string;
   customerEmail: string;
   customerPassport: string;
   customerCountry: string;
-  groupSize: {
-    adults: number;
-    children: number;
-    infants: number;
-  };
+  groupSize: { adults: number; children: number; infants: number };
   notes?: string;
-
-  // Hotel & Stay
   hotelName: string;
   hotelCity: 'Makkah' | 'Madina' | 'Jeddah' | 'Riyadh' | 'Jakarta' | 'Bali' | 'Other';
   starRating: number;
   checkInDate: string;
   checkOutDate: string;
   totalNights: number;
-  hcnRsvp?: string; // Optional Hotel Confirmation Number / RSVP reference — triggers QR generation
-  hotelTransfer?: HotelTransfer; // Filled when booking is moved by vendor or upgraded by client
-
-  // Pricing & Currency
-  inputCurrency: Currency; // Rates entered in SAR or IDR
-  exchangeRate: number; // e.g., 1 SAR = 4250 IDR at time of booking
-
-  // Room details
+  hcnRsvp?: string;
+  hotelTransfer?: HotelTransfer;
+  inputCurrency: Currency;
+  exchangeRate: number;
   rooms: RoomDetail[];
-  
-  // Extra Cost / Services
   additionalServices: AdditionalCostItem[];
-
-  // Totals (stored in SAR for uniform base analytics + IDR calculated)
   totalCostSAR: number;
   totalSellSAR: number;
   totalCostIDR: number;
   totalSellIDR: number;
-
-  // Profitability
   profitSAR: number;
   profitIDR: number;
   profitMarginPercent: number;
-
-  // Payment Tracking
   amountPaidSAR: number;
   amountPaidIDR: number;
-  paymentExchangeRate?: number; // Rate applied at payment transaction time
+  paymentExchangeRate?: number;
   paymentMethod: PaymentMethod;
   dueDate: string;
   paymentReference?: string;
@@ -182,7 +159,7 @@ export interface HotelInfo {
   name: string;
   city: 'Makkah' | 'Madina' | 'Jeddah' | 'Riyadh' | 'Jakarta' | 'Bali' | 'Other';
   starRating: number;
-  distanceToHaram?: string; // e.g. "100m - Clock Tower"
+  distanceToHaram?: string;
   contactPerson?: string;
   contactPhone?: string;
   defaultCostSAR: number;
@@ -198,31 +175,26 @@ export interface StaffMember {
 export interface CompanySettings {
   companyName: string;
   tagline: string;
-  logoUrl?: string; // Base64 data URL or PNG image link
-  stampUrl?: string; // Authorized company stamp PNG (base64)
-  crNumber: string; // Commercial Registration
+  logoUrl?: string;
+  stampUrl?: string;
+  crNumber: string;
   licenseNumber: string;
   address: string;
   phone: string;
   email: string;
   website: string;
-  defaultExchangeRateSARtoIDR: number; // e.g. 4250
+  defaultExchangeRateSARtoIDR: number;
   termsAndConditions: string;
-  staffMembers: StaffMember[]; // Editable issuing officers (name + role)
+  staffMembers: StaffMember[];
   defaultStaffName: string;
-  // Import engine audit tolerance (SAR) — configurable precision for total validation
   importToleranceSAR?: number;
-
-  // PWA / application branding (Settings → Application Branding)
   appName?: string;
   shortName?: string;
   appDescription?: string;
   themeColor?: string;
   backgroundColor?: string;
-  appIconUrl?: string; // uploaded PNG used for favicon + PWA icons
-
-  // Voucher branding (Confirmation Letter identity)
-  legalEntityName?: string; // e.g. PT. TAMIMA JAYA WISATA
+  appIconUrl?: string;
+  legalEntityName?: string;
   waPhone?: string;
   indonesiaAddress?: string;
   bookingManagerName?: string;
