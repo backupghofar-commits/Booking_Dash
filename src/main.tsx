@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { LayoutDashboard, CalendarDays, FileText, Settings, Plus } from 'lucide-react';
 import { Dashboard } from './components/Dashboard';
 import { INITIAL_BOOKINGS, DEFAULT_SETTINGS } from './data/InitialData';
-import type { Booking } from './types/Booking';
+import type { Booking } from './types/booking';
 import './styles.css';
 
 function App() {
