@@ -13,7 +13,8 @@ import {
   BarChart3,
   CalendarDays,
   Boxes,
-  TrainFront
+  TrainFront,
+  Bus
 } from 'lucide-react';
 import { CompanySettings } from '../types/booking';
 import { RiyalIcon } from './RiyalIcon';
@@ -27,6 +28,7 @@ interface HeaderProps {
     | 'calendar'
     | 'management'
     | 'train'
+    | 'armada'
     | 'new-booking'
     | 'settings';
   setActiveTab: (
@@ -37,6 +39,7 @@ interface HeaderProps {
       | 'calendar'
       | 'management'
       | 'train'
+      | 'armada'
       | 'new-booking'
       | 'settings'
   ) => void;
@@ -247,6 +250,18 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('armada')}
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg font-medium text-sm transition-all ${
+                activeTab === 'armada'
+                  ? 'bg-amber-600 text-white shadow-md'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Bus className="w-4 h-4" />
+              <span>Armada Umroh</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('management')}
               className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg font-medium text-sm transition-all ${
                 activeTab === 'management'
@@ -330,6 +345,15 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <TrainFront className="w-4 h-4 mb-0.5" />
           <span>Train</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('armada')}
+          className={`flex flex-col items-center py-1 px-2 rounded ${
+            activeTab === 'armada' ? 'text-amber-400 font-bold' : 'text-slate-400'
+          }`}
+        >
+          <Bus className="w-4 h-4 mb-0.5" />
+          <span>Armada</span>
         </button>
         <button
           onClick={() => setActiveTab('management')}
