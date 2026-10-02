@@ -15,7 +15,7 @@ import type { TrainBooking, TrainPayment } from '../types/train';
  * Offline-first: falls back to localStorage when API is unreachable.
  */
 
-const API_BASE = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_TRAIN_API_BASE || '';
+const API_BASE = process.env.NEXT_PUBLIC_TRAIN_API_BASE || '';
 const LOCAL_KEY = 'tamima_train_bookings_v1';
 
 export function apiAvailable(): boolean {

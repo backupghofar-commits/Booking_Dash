@@ -15,7 +15,7 @@ import type { ArmadaBooking, ArmadaPayment } from '../types/armada';
  * Offline-first: falls back to localStorage when API is unreachable.
  */
 
-const API_BASE = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_ARMADA_API_BASE || '';
+const API_BASE = process.env.NEXT_PUBLIC_ARMADA_API_BASE || '';
 const LOCAL_KEY = 'tamima_armada_bookings_v1';
 
 export function apiAvailable(): boolean {

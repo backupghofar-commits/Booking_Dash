@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { 
   Building2, 
@@ -14,7 +16,10 @@ import {
   CalendarDays,
   Boxes,
   TrainFront,
-  Bus
+  Bus,
+  LogOut,
+  Shield,
+  History
 } from 'lucide-react';
 import { CompanySettings } from '../types/booking';
 import { RiyalIcon } from './RiyalIcon';
@@ -50,6 +55,10 @@ interface HeaderProps {
   setCurrencyView: (view: 'DUAL' | 'SAR' | 'IDR') => void;
   darkMode: boolean;
   setDarkMode: (mode: boolean) => void;
+  user?: { name: string; role: string; email?: string } | null;
+  onLogout?: () => void;
+  onOpenUsers?: () => void;
+  onOpenAudit?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -62,6 +71,10 @@ export const Header: React.FC<HeaderProps> = ({
   setCurrencyView,
   darkMode,
   setDarkMode,
+  user,
+  onLogout,
+  onOpenUsers,
+  onOpenAudit,
 }) => {
   return (
     <header className="bg-slate-900 text-white shadow-xl border-b border-emerald-900/40 sticky top-0 z-40">
@@ -141,11 +154,34 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden sm:inline text-[11px] text-slate-200">{darkMode ? 'Light' : 'Dark'}</span>
           </button>
 
-          {/* Offline/Local DB indicator */}
+          {/* Persistence indicator */}
           <div className="hidden sm:flex items-center space-x-1 text-slate-400 bg-slate-800/70 px-2 py-0.5 rounded border border-slate-700">
             <Wifi className="w-3 h-3 text-emerald-400" />
-            <span className="text-[10px]">Local DB Saved</span>
+            <span className="text-[10px]">SQLite persisted</span>
           </div>
+
+          {user && (
+            <div className="flex items-center gap-1.5">
+              {onOpenUsers && (
+                <button onClick={onOpenUsers} className="hidden md:flex items-center gap-1 text-[10px] text-slate-300 hover:text-white px-2 py-0.5 rounded border border-slate-700" title="Users">
+                  <Shield className="w-3 h-3" /> Users
+                </button>
+              )}
+              {onOpenAudit && (
+                <button onClick={onOpenAudit} className="hidden md:flex items-center gap-1 text-[10px] text-slate-300 hover:text-white px-2 py-0.5 rounded border border-slate-700" title="Audit">
+                  <History className="w-3 h-3" /> Audit
+                </button>
+              )}
+              <span className="hidden lg:inline text-[10px] text-slate-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                {user.name} · {user.role}
+              </span>
+              {onLogout && (
+                <button onClick={onLogout} className="flex items-center gap-1 text-[10px] text-rose-200 hover:text-white px-2 py-0.5 rounded border border-rose-900/60 bg-rose-950/40" title="Sign out">
+                  <LogOut className="w-3 h-3" /> Out
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

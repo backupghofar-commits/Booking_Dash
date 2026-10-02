@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useState } from 'react';
 import {
   Settings,
@@ -46,7 +47,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<CompanySettings>({
     ...settings,
-    staffMembers: settings.staffMembers || ['Hafiz Rahmani', 'Amina Al-Mansoor', 'Staff Administrator'],
+    staffMembers: settings.staffMembers || [
+      { id: 'st-1', name: 'Hafiz Rahmani', role: 'Senior Booking Officer' },
+      { id: 'st-2', name: 'Amina Al-Mansoor', role: 'Sales Executive' },
+      { id: 'st-3', name: 'Staff Administrator', role: 'Administrator' },
+    ],
     defaultStaffName: settings.defaultStaffName || 'Hafiz Rahmani',
   });
   const [newStaffInput, setNewStaffInput] = useState('');

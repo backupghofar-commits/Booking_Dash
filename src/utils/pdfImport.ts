@@ -3,14 +3,13 @@
  * PDF → text extraction (+table detection by coordinate clustering) → row/column reconstruction.
  * Scanned/image-only PDFs are flagged OCR_REQUIRED instead of guessed.
  */
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import * as pdfjsLib from 'pdfjs-dist';
 
 let workerSet = false;
 function ensureWorker() {
   if (workerSet) return;
   try {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
     workerSet = true;
   } catch {
     /* fake-worker fallback attempted by pdfjs */

@@ -1,3 +1,4 @@
+"use client";
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Download, Loader2, Printer, RotateCcw, X } from 'lucide-react';

@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useState } from 'react';
 import {
   ArrowLeft, Printer, Download, MessageCircle, Mail, Edit3, Copy, Check,

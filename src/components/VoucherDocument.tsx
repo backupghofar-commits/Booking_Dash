@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { MultiFormatWriter, BarcodeFormat, EncodeHintType } from '@zxing/library';
 import JsBarcode from 'jsbarcode';

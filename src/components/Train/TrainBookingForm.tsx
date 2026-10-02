@@ -1,3 +1,4 @@
+"use client";
 import React, { useMemo, useState } from 'react';
 import {
   ArrowLeft, Save, FileText, Plus, Trash2, TrainFront, Users, User,

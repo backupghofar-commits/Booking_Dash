@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { TrainFront, Users, Wallet, TrendingUp, AlertCircle, ArrowRight, Plus } from 'lucide-react';
 import type { TrainBooking } from '../../types/train';

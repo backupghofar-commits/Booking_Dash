@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { Bus, Users, Wallet, TrendingUp, AlertCircle, ArrowRight, Plus, Armchair } from 'lucide-react';
 import type { ArmadaBooking } from '../../types/armada';

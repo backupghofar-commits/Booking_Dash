@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { Building2, Lock, Users, Wallet, CreditCard, CalendarDays } from 'lucide-react';
 import { Booking, CompanySettings } from '../types/booking';

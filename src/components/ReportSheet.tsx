@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { ShieldCheck, Users, Lock } from 'lucide-react';
 import { Booking, CompanySettings } from '../types/booking';

@@ -1,3 +1,4 @@
+"use client";
 import React, { useMemo, useRef, useState } from 'react';
 import {
   FileUp, Download, ArrowLeft, CheckCircle2, Database, Loader2, ShieldAlert,

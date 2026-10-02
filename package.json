@@ -1,41 +1,48 @@
 {
-  "name": "react-vite-tailwind",
+  "name": "tamima-booking-dash",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "next dev -H 0.0.0.0 -p 3000",
+    "build": "next build",
+    "start": "next start -H 0.0.0.0 -p 3000",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:setup": "tsx prisma/seed.ts",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run build"
+    "test": "tsx --test src/lib/calculations/calculations.test.ts",
+    "check": "npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
     "@types/jsbarcode": "^3.11.4",
     "@types/qrcode": "^1.5.6",
     "@zxing/library": "^0.21.3",
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.2.0",
     "clsx": "2.1.1",
     "html2canvas": "^1.4.1",
     "html2canvas-pro": "^2.3.3",
     "jsbarcode": "^3.12.3",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.28.0",
+    "next": "^15.5.4",
     "pdfjs-dist": "^5.6.205",
     "qrcode": "^1.5.4",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "tailwind-merge": "3.4.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "4.1.17",
+    "@tailwindcss/postcss": "4.1.17",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "22.19.17",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "5.1.1",
     "tailwindcss": "4.1.17",
-    "typescript": "5.9.3",
-    "vite": "7.3.2",
-    "vite-plugin-singlefile": "2.3.0"
+    "tsx": "^4.20.5",
+    "typescript": "5.9.3"
   }
 }

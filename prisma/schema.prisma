@@ -1,0 +1,460 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("STAFF")
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  sessions     Session[]
+  auditLogs    AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Setting {
+  id        String   @id
+  payload   String
+  updatedAt DateTime @updatedAt
+}
+
+model Hotel {
+  id             String   @id @default(cuid())
+  name           String
+  city           String
+  starRating     Int      @default(5)
+  distanceToHaram String?
+  contactPerson  String?
+  contactPhone   String?
+  defaultCostSAR Float    @default(0)
+  defaultSellSAR Float    @default(0)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Customer {
+  id             String   @id @default(cuid())
+  bookingType    String   @default("Private")
+  name           String
+  travelCompany  String?
+  phone          String   @default("")
+  email          String?
+  passport       String?
+  country        String?
+  lastBookingRef String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([name])
+  @@index([phone])
+}
+
+model Vendor {
+  id        String   @id @default(cuid())
+  name      String
+  pic       String   @default("")
+  phone     String   @default("")
+  email     String   @default("")
+  notes     String   @default("")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  name           String
+  category       String   @default("Other")
+  unit           String   @default("unit")
+  defaultCostSAR Float    @default(0)
+  defaultSellSAR Float    @default(0)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model HotelBooking {
+  id                   String   @id @default(cuid())
+  bookingRef           String   @unique
+  status               String   @default("Draft")
+  staffName            String   @default("")
+  source               String   @default("manual")
+  visaAction           String?
+  bookingType          String   @default("Private")
+  travelCompany        String?
+  vendorName           String?
+  vendorPic            String?
+  customerName         String
+  customerPhone        String   @default("")
+  customerEmail        String   @default("")
+  customerPassport     String   @default("")
+  customerCountry      String   @default("Indonesia")
+  adults               Int      @default(0)
+  children             Int      @default(0)
+  infants              Int      @default(0)
+  notes                String?
+  hotelName            String
+  hotelCity            String
+  starRating           Int      @default(5)
+  checkInDate          String
+  checkOutDate         String
+  totalNights          Int      @default(1)
+  hcnRsvp              String?
+  hotelTransferJson    String?
+  importSourceJson     String?
+  inputCurrency        String   @default("SAR")
+  exchangeRate         Float    @default(4250)
+  totalCostSAR         Float    @default(0)
+  totalSellSAR         Float    @default(0)
+  totalCostIDR         Float    @default(0)
+  totalSellIDR         Float    @default(0)
+  profitSAR            Float    @default(0)
+  profitIDR            Float    @default(0)
+  profitMarginPercent  Float    @default(0)
+  amountPaidSAR        Float    @default(0)
+  amountPaidIDR        Float    @default(0)
+  paymentExchangeRate  Float?
+  paymentMethod        String   @default("Bank Transfer (BCA/Mandiri)")
+  dueDate              String   @default("")
+  paymentReference     String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  rooms                BookingRoom[]
+  services             BookingService[]
+  payments             HotelPayment[]
+
+  @@index([status])
+  @@index([checkInDate])
+  @@index([customerName])
+  @@index([hotelName])
+  @@index([hotelCity])
+}
+
+model BookingRoom {
+  id            String       @id @default(cuid())
+  bookingId     String
+  booking       HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  roomType      String
+  numberOfRooms Int          @default(1)
+  costPerNight  Float        @default(0)
+  sellPerNight  Float        @default(0)
+  mealPlan      String       @default("Breakfast")
+  sortOrder     Int          @default(0)
+
+  @@index([bookingId])
+}
+
+model BookingService {
+  id          String       @id @default(cuid())
+  bookingId   String
+  booking     HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  description String
+  cost        Float        @default(0)
+  sell        Float        @default(0)
+  sortOrder   Int          @default(0)
+
+  @@index([bookingId])
+}
+
+model HotelPayment {
+  id            String       @id @default(cuid())
+  bookingId     String
+  booking       HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  paidAt        DateTime     @default(now())
+  amountSAR     Float        @default(0)
+  amountIDR     Float        @default(0)
+  exchangeRate  Float?
+  direction     String       @default("customer")
+  method        String       @default("Bank Transfer (BCA/Mandiri)")
+  reference     String?
+  note          String?
+
+  @@index([bookingId])
+}
+
+model TrainBooking {
+  id                  String   @id @default(cuid())
+  trainRef            String   @unique
+  status              String   @default("Draft")
+  staffName           String   @default("")
+  source              String   @default("manual")
+  bookingType         String   @default("Private")
+  customerName        String
+  travelCompany       String?
+  customerPhone       String   @default("")
+  customerEmail       String   @default("")
+  customerCountry     String   @default("Indonesia")
+  notes               String?
+  tripType            String   @default("One-Way")
+  originCode          String
+  destinationCode     String
+  trainClass          String   @default("Economy")
+  vendorName          String?
+  vendorPic           String?
+  inputCurrency       String   @default("SAR")
+  exchangeRate        Float    @default(4250)
+  costPerPax          Float    @default(0)
+  sellPerPax          Float    @default(0)
+  paxCount            Int      @default(0)
+  totalCostSAR        Float    @default(0)
+  totalSellSAR        Float    @default(0)
+  totalCostIDR        Float    @default(0)
+  totalSellIDR        Float    @default(0)
+  profitSAR           Float    @default(0)
+  profitIDR           Float    @default(0)
+  profitMarginPercent Float    @default(0)
+  amountPaidSAR       Float    @default(0)
+  amountPaidIDR       Float    @default(0)
+  paymentExchangeRate Float?
+  paymentMethod       String   @default("Bank Transfer (BCA/Mandiri)")
+  dueDate             String   @default("")
+  paymentReference    String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  legs                TrainLeg[]
+  passengers          TrainPassenger[]
+  extras              TrainExtra[]
+  payments            TrainPayment[]
+
+  @@index([status])
+  @@index([originCode, destinationCode])
+  @@index([customerName])
+}
+
+model TrainLeg {
+  id               String       @id @default(cuid())
+  bookingId        String
+  booking          TrainBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  direction        String
+  trainNo          String       @default("")
+  departureDate    String
+  departureTime    String       @default("00:00")
+  arrivalDate      String
+  arrivalTime      String       @default("")
+  durationMinutes  Int          @default(0)
+  sortOrder        Int          @default(0)
+
+  @@index([bookingId])
+  @@index([departureDate])
+}
+
+model TrainPassenger {
+  id          String       @id @default(cuid())
+  bookingId   String
+  booking     TrainBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  fullName    String
+  idNumber    String       @default("")
+  nationality String       @default("Indonesia")
+  category    String       @default("Adult")
+  seatCoach   String       @default("")
+  seatNumber  String       @default("")
+  sortOrder   Int          @default(0)
+
+  @@index([bookingId])
+}
+
+model TrainExtra {
+  id          String       @id @default(cuid())
+  bookingId   String
+  booking     TrainBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  description String
+  cost        Float        @default(0)
+  sell        Float        @default(0)
+  sortOrder   Int          @default(0)
+
+  @@index([bookingId])
+}
+
+model TrainPayment {
+  id           String       @id @default(cuid())
+  bookingId    String
+  booking      TrainBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  paidAt       DateTime     @default(now())
+  amountSAR    Float        @default(0)
+  amountIDR    Float        @default(0)
+  exchangeRate Float        @default(4250)
+  method       String       @default("Bank Transfer (BCA/Mandiri)")
+  reference    String?
+  note         String?
+
+  @@index([bookingId])
+}
+
+model ArmadaBooking {
+  id                  String   @id @default(cuid())
+  armadaRef           String   @unique
+  status              String   @default("Draft")
+  staffName           String   @default("")
+  source              String   @default("manual")
+  bookingType         String   @default("Group")
+  customerName        String
+  travelCompany       String?
+  customerPhone       String   @default("")
+  customerEmail       String   @default("")
+  customerCountry     String   @default("Indonesia")
+  groupSize           Int      @default(0)
+  notes               String?
+  serviceType         String   @default("One-Way")
+  originCode          String
+  destinationCode     String
+  vehicleType         String
+  vendorName          String?
+  vendorPic           String?
+  inputCurrency       String   @default("SAR")
+  exchangeRate        Float    @default(4250)
+  costPerUnit         Float    @default(0)
+  sellPerUnit         Float    @default(0)
+  unitCount           Int      @default(0)
+  totalSeats          Int      @default(0)
+  totalCostSAR        Float    @default(0)
+  totalSellSAR        Float    @default(0)
+  totalCostIDR        Float    @default(0)
+  totalSellIDR        Float    @default(0)
+  profitSAR           Float    @default(0)
+  profitIDR           Float    @default(0)
+  profitMarginPercent Float    @default(0)
+  amountPaidSAR       Float    @default(0)
+  amountPaidIDR       Float    @default(0)
+  paymentExchangeRate Float?
+  paymentMethod       String   @default("Bank Transfer (BCA/Mandiri)")
+  dueDate             String   @default("")
+  paymentReference    String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  legs                ArmadaLeg[]
+  units               ArmadaUnit[]
+  extras              ArmadaExtra[]
+  payments            ArmadaPayment[]
+
+  @@index([status])
+  @@index([originCode, destinationCode])
+  @@index([customerName])
+}
+
+model ArmadaLeg {
+  id              String        @id @default(cuid())
+  bookingId       String
+  booking         ArmadaBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  direction       String
+  routeLabel      String        @default("")
+  departureDate   String
+  departureTime   String        @default("00:00")
+  arrivalDate     String
+  arrivalTime     String        @default("")
+  durationMinutes Int           @default(0)
+  sortOrder       Int           @default(0)
+
+  @@index([bookingId])
+  @@index([departureDate])
+}
+
+model ArmadaUnit {
+  id           String        @id @default(cuid())
+  bookingId    String
+  booking      ArmadaBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  vehicleType  String
+  plateNumber  String        @default("")
+  driverName   String        @default("")
+  driverPhone  String        @default("")
+  capacity     Int           @default(0)
+  note         String        @default("")
+  sortOrder    Int           @default(0)
+
+  @@index([bookingId])
+}
+
+model ArmadaExtra {
+  id          String        @id @default(cuid())
+  bookingId   String
+  booking     ArmadaBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  description String
+  cost        Float         @default(0)
+  sell        Float         @default(0)
+  sortOrder   Int           @default(0)
+
+  @@index([bookingId])
+}
+
+model ArmadaPayment {
+  id           String        @id @default(cuid())
+  bookingId    String
+  booking      ArmadaBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  paidAt       DateTime      @default(now())
+  amountSAR    Float         @default(0)
+  amountIDR    Float         @default(0)
+  exchangeRate Float         @default(4250)
+  method       String        @default("Bank Transfer (BCA/Mandiri)")
+  reference    String?
+  note         String?
+
+  @@index([bookingId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userEmail String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+  @@index([entity])
+  @@index([userId])
+}
+
+model ExchangeRate {
+  id        String   @id @default("sar-idr")
+  rate      Float
+  source    String
+  stale     Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model ImportAudit {
+  id            String   @id @default(cuid())
+  filename      String
+  fileType      String
+  uploadedBy    String
+  totalRows     Int      @default(0)
+  totalBookings Int      @default(0)
+  valid         Int      @default(0)
+  warning       Int      @default(0)
+  error         Int      @default(0)
+  duplicate     Int      @default(0)
+  mode          String
+  result        String
+  checksum      String
+  createdAt     DateTime @default(now())
+}
